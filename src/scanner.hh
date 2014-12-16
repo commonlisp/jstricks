@@ -1,4 +1,5 @@
 
+#include <boost/optional.hpp>
 #include <string>
 
 using namespace std;
@@ -101,5 +102,17 @@ const string MULASSIGN = "*=";
 const string DIVASSIGN = "/=";
 const string MODASSIGN = "%=";
 
+template<type T>
+class CircularBuf<T> {
+  static const size_t bufSize = 4;
+  T items[bufSize];
+};
 
+enum Token {
+  
+};
+
+class Scanner {
+  boost::optional<Token> getToken();
+};
 
