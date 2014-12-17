@@ -2,117 +2,198 @@
 #include <boost/optional.hpp>
 #include <string>
 
-using namespace std;
+#define FOR_EACH_TOKEN_KIND_WITH_RANGE(macro, range) \
+  macro(SEMI,  ";") \
+  macro(COMMA, ",") \
+  macro(HOOK, "?") \
+  macro(COLON, ":") \
+  macro(INC, "++") \
+  macro(DEC, "--") \
+  macro(DOT, ".") \
+macro( TRIPLEDOT , "...") \
+macro( LB , "[") \
+macro( RB , "]") \
+macro( LC , "{") \
+macro( RC , "}") \
+macro( LP , "(") \
+macro( RP , ")") \
+macro( NAME , "identifier") \
+macro( NUMBER , "numeric literal") \
+macro( STRING , "string literal") \
+macro( TEMPLATE_HEAD , "${") \
+macro( NO_SUBS_TEMPLATE , "template literal") \
+macro( REGEXP , "regular expression literal") \
+macro( TRUE , "boolean literal 'true'") \
+macro( FALSE , "boolean literal 'false'") \
+macro( NULL , "null literal") \
+macro( THIS , "keyword 'this'") \
+macro( FUNCTION , "keyword 'function'") \
+macro( IF , "keyword 'if'") \
+macro( ELSE , "keyword 'else'") \
+macro( SWITCH , "keyword 'switch'") \
+macro( CASE , "keyword 'case'") \
+macro( DEFAULT , "keyword 'default'") \
+macro( WHILE , "keyword 'while'") \
+macro( DO , "keyword 'do'") \
+macro( FOR , "keyword 'for'") \
+macro( BREAK , "keyword 'break'") \
+macro( CONTINUE , "keyword 'continue'") \
+macro( VAR , "keyword 'var'") \
+macro( CONST , "keyword 'const'") \
+macro( WITH , "keyword 'with'") \
+macro( RETURN , "keyword 'return'") \
+macro( NEW , "keyword 'new'") \
+macro( DELETE , "keyword 'delete'") \
+macro( TRY , "keyword 'try'") \
+macro( CATCH , "keyword 'catch'") \
+macro( FINALLY , "keyword 'finally'") \
+macro( THROW , "keyword 'throw'") \
+macro( DEBUGGER , "keyword 'debugger'") \
+macro( YIELD , "keyword 'yield'") \
+macro( LET , "keyword 'let'") \
+macro( EXPORT , "keyword 'export'") \
+macro( IMPORT , "keyword 'import'") \
+macro( RESERVED , "reserved keyword") \
+macro( STRICT_RESERVED , "reserved keyword") \
 
-const string SEMI = ";";
-const string COMMA = ",";
-const string HOOK = "?";
-const string COLON = ":";
-const string INC = "++";
-const string DEC = "--";
-const string DOT = ".";
-const string TRIPLEDOT = "...";
-const string LB = "[";
-const string RB = "]";
-const string LC = "{";
-const string RC = "}";
-const string LP = "(";
-const string RP = ")";
-const string NAME = "identifier";
-const string NUMBER = "numeric literal";
-const string STRING = "string literal";
-const string TEMPLATE_HEAD = "${";
-const string NO_SUBS_TEMPLATE = "template literal";
-const string REGEXP = "regular expression literal";
-const string TRUE = "boolean literal 'true'";
-const string FALSE = "boolean literal 'false'";
-const string NULL = "null literal";
-const string THIS = "keyword 'this'";
-const string FUNCTION = "keyword 'function'";
-const string IF = "keyword 'if'";
-const string ELSE = "keyword 'else'";
-const string SWITCH = "keyword 'switch'";
-const string CASE = "keyword 'case'";
-const string DEFAULT = "keyword 'default'";
-const string WHILE = "keyword 'while'";
-const string DO = "keyword 'do'";
-const string FOR = "keyword 'for'";
-const string BREAK = "keyword 'break'";
-const string CONTINUE = "keyword 'continue'";
-const string VAR = "keyword 'var'";
-const string CONST = "keyword 'const'";
-const string WITH = "keyword 'with'";
-const string RETURN = "keyword 'return'";
-const string NEW = "keyword 'new'";
-const string DELETE = "keyword 'delete'";
-const string TRY = "keyword 'try'";
-const string CATCH = "keyword 'catch'";
-const string FINALLY = "keyword 'finally'";
-const string THROW = "keyword 'throw'";
-const string DEBUGGER = "keyword 'debugger'";
-const string YIELD = "keyword 'yield'";
-const string LET = "keyword 'let'";
-const string EXPORT = "keyword 'export'";
-const string IMPORT = "keyword 'import'";
-const string RESERVED = "reserved keyword";
-const string STRICT_RESERVED = "reserved keyword";
+macro( OR , "||") \
+macro( AND , "&&") \
+macro( BITOR , "|") \
+macro( BITXOR , "^") \
+macro( BITAND , "&") \
+macro( STRICTEQ , "===") \
+macro( EQ , "==") \
+macro( STRICTNE , "!==") \
+macro( LT , "<") \
+macro( LE , "<=") \
+macro( GT , ">") \
+macro( GE , ">=") \
 
-const string OR = "||";
-const string AND = "&&";
-const string BITOR = "|";
-const string BITXOR = "^";
-const string BITAND = "&";
-const string STRICTEQ = "===";
-const string EQ = "==";
-const string STRICTNE = "!==";
-const string LT = "<";
-const string LE = "<=";
-const string GT = ">";
-const string GE = ">=";
+macro( INSTANCEOF , "keyword 'instanceof'") \
+macro( IN , "keyword 'in'") \
 
-const string INSTANCEOF = "keyword 'instanceof'";
-const string IN = "keyword 'in'";
+macro( LSH , "<<") \
+macro( RSH , ">>") \
+macro( URSH , ">>>") \
 
-const string LSH = "<<";
-const string RSH = ">>";
-const string URSH = ">>>";
+macro( ADD, "+") \
+macro( SUB , "-") \
+macro( MUL , "*") \
+macro( DIV , "/") \
+macro( MOD , "%") \
 
-const string ADD = "+";
-const string SUB = "-";
-const string MUL = "*";
-const string DIV = "/";
-const string MOD = "%";
+macro( TYPEOF , "keyword 'typeof'") \
+macro( VOID , "keyword 'void'") \
+macro( NOT , "!") \
+macro( BITNOT , "~") \
+macro( ARROW , "=>") \
 
-const string TYPEOF = "keyword 'typeof'";
-const string VOID = "keyword 'void'";
-const string NOT = "!";
-const string BITNOT = "~";
-const string ARROW = "=>";
+macro( ASSIGN , "=") \
+macro( ADDASSIGN , "+=") \
+macro( SUBASSIGN , "-=") \
+macro( BITORASSIGN , "|=") \
+macro( BITXORASSIGN , "^=") \
+macro( BITANDASSIGN , "&=") \
+macro( LSHASSIGN , "<<=") \
+macro( RSHASSIGN , ">>=") \
+macro( URSHASSIGN , ">>>=") \
+macro( MULASSIGN , "*=") \
+macro( DIVASSIGN , "/=") \
+macro( MODASSIGN , "%=")
 
-const string ASSIGN = "=";
-const string ADDASSIGN = "+=";
-const string SUBASSIGN = "-=";
-const string BITORASSIGN = "|=";
-const string BITXORASSIGN = "^=";
-const string BITANDASSIGN = "&=";
-const string LSHASSIGN = "<<=";
-const string RSHASSIGN = ">>=";
-const string URSHASSIGN = ">>>=";
-const string MULASSIGN = "*=";
-const string DIVASSIGN = "/=";
-const string MODASSIGN = "%=";
+enum TokenKind {
+#define EMIT_ENUM(name, desc) TOK_##name,
+#define EMIT_ENUM_RANGE(name, value) TOK_##name = TOK_##value,
+    FOR_EACH_TOKEN_KIND_WITH_RANGE(EMIT_ENUM, EMIT_ENUM_RANGE)
+#undef EMIT_ENUM
+#undef EMIT_ENUM_RANGE
+    TOK_LIMIT                      // domain size
+};
+
 
 template<type T>
 class CircularBuf<T> {
   static const size_t bufSize = 4;
   T items[bufSize];
+  int cursor; 
+public: 
+  
 };
 
 enum Token {
   
 };
 
+class Buf {
+  
+};
+
+enum FirstCharKind {
+    OneChar_Min = 0,
+    OneChar_Max = TOK_LIMIT - 1,
+
+    Space = TOK_LIMIT,
+    Ident,
+    Dec,
+    String,
+    EOL,
+    BasePrefix,
+    Other
+};
+
+#define _______     Other
+static const uint8_t firstCharKinds[] = {
+/*         0        1        2        3        4        5        6        7        8        9    */
+/*   0+ */ _______, _______, _______, _______, _______, _______, _______, _______, _______,   Space,
+/*  10+ */     EOL,   Space,   Space,     EOL, _______, _______, _______, _______, _______, _______,
+/*  20+ */ _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+/*  30+ */ _______, _______,   Space, _______,  String, _______,   Ident, _______, _______,  String,
+/*  40+ */  TOK_LP,  TOK_RP, _______, _______, TOK_COMMA,_______,  _______, _______,BasePrefix,  Dec,
+/*  50+ */     Dec,     Dec,     Dec,     Dec,     Dec,     Dec,     Dec,    Dec,  TOK_COLON,TOK_SEMI,
+/*  60+ */ _______, _______, _______,TOK_HOOK, _______,   Ident,   Ident,   Ident,   Ident,   Ident,
+/*  70+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
+/*  80+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
+/*  90+ */   Ident,  TOK_LB, _______,  TOK_RB, _______,   Ident, Templat,   Ident,   Ident,   Ident,
+/* 100+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
+/* 110+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
+/* 120+ */   Ident,   Ident,   Ident,  TOK_LC, _______,  TOK_RC,T_BITNOT, _______
+};
+#undef _______
+
+
 class Scanner {
-  boost::optional<Token> getToken();
+  std::istream tokStream;
+public:
+  Scanner(std::istream _tokStream) : tokStream(_tokStream) { }
+
+  /*
+    Spidermonkey's tokenize function has the following control flow structure:
+
+    retry:
+    switch (c) {
+      case ...:
+        goto badchar
+      badchar:
+      default:
+    }
+    out:
+    error:
+   */
+  boost::optional<Token> getToken() {
+    for (;;) {
+      if (tokStream.eof()) {
+	return boost::optional<Token>();
+      }
+      int c = tokStream.get();
+      // Cases:
+      // 1. Single character token
+      // 2. Whitespace
+      // 3. Identifier
+      // 4. Decimal 
+      // 5. String or Template String
+      // 6. EOL
+      // 7. Hex, octal, binary
+      // 8. Operators 
+    }
 };
 
