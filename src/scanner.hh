@@ -163,6 +163,9 @@ static const uint8_t firstCharKinds[] = {
 
 class Scanner {
   std::istream tokStream;
+
+  inline bool isASCIIDecimal(char c) { return (unsigned)c - '0' <= 9; }
+
 public:
   Scanner(std::istream _tokStream) : tokStream(_tokStream) { }
 
@@ -189,7 +192,34 @@ public:
       // 1. Single character token
       // 2. Whitespace
       // 3. Identifier
+      for (;;) {
+	c = tokStream.get();
+	
+      }
       // 4. Decimal 
+      if (isASCIIDecimal(c)) {
+	while (isASCIIDecimal(c)) {
+	  c = tokStream.get();
+	  if (c == '.') {
+	    do {
+	      c = tokStream.get();
+	    } while (isASCIIDecimal(c));
+	  }
+	  if (c == 'e' || c == 'E') {
+	    c = tokStream.get();
+	    if (c == '+' || c == '-') 
+	      c = tokStream.get();
+	    if (!isASCIIDecimal(c)) {
+	      cerr << "error: malformed decimal" << endl; 
+	      return optional<Token>();
+	    }
+	    do {
+	      c = tokStream.get();
+	    } while (isASCIIDecimal(c));
+	  }
+	}
+	
+      }
       // 5. String or Template String
       // 6. EOL
       // 7. Hex, octal, binary
