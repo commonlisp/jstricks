@@ -1,3 +1,5 @@
+#ifndef SCANNER_H
+#define SCANNER_H 
 
 #include <boost/optional.hpp>
 #include <string>
@@ -54,8 +56,7 @@ macro( LET , "keyword 'let'") \
 macro( EXPORT , "keyword 'export'") \
 macro( IMPORT , "keyword 'import'") \
 macro( RESERVED , "reserved keyword") \
-macro( STRICT_RESERVED , "reserved keyword") \
-
+macro( STRICT_RESERVED , "reserved keyword") /* End Range */ \
 macro( OR , "||") \
 macro( AND , "&&") \
 macro( BITOR , "|") \
@@ -67,27 +68,22 @@ macro( STRICTNE , "!==") \
 macro( LT , "<") \
 macro( LE , "<=") \
 macro( GT , ">") \
-macro( GE , ">=") \
-
+macro( GE , ">=") /* End range */ \
 macro( INSTANCEOF , "keyword 'instanceof'") \
-macro( IN , "keyword 'in'") \
-
+macro( IN , "keyword 'in'") /* End range */  \
 macro( LSH , "<<") \
 macro( RSH , ">>") \
-macro( URSH , ">>>") \
-
+macro( URSH , ">>>") /* End range */ \
 macro( ADD, "+") \
 macro( SUB , "-") \
 macro( MUL , "*") \
 macro( DIV , "/") \
-macro( MOD , "%") \
-
+macro( MOD , "%") /* End range */ \
 macro( TYPEOF , "keyword 'typeof'") \
 macro( VOID , "keyword 'void'") \
 macro( NOT , "!") \
 macro( BITNOT , "~") \
-macro( ARROW , "=>") \
-
+macro( ARROW , "=>") /* End range */ \
 macro( ASSIGN , "=") \
 macro( ADDASSIGN , "+=") \
 macro( SUBASSIGN , "-=") \
@@ -111,8 +107,8 @@ enum TokenKind {
 };
 
 
-template<type T>
-class CircularBuf<T> {
+template<typename T>
+class CircularBuf {
   static const size_t bufSize = 4;
   T items[bufSize];
   int cursor; 
@@ -120,8 +116,18 @@ public:
   
 };
 
-enum Token {
-  
+struct Pos {
+  int begin;
+  int end;
+};
+
+struct Token {
+  TokenKind type;
+  Pos pos;
+  union {
+  private:
+    double number;
+  } info;
 };
 
 class Buf {
@@ -153,10 +159,10 @@ static const uint8_t firstCharKinds[] = {
 /*  60+ */ _______, _______, _______,TOK_HOOK, _______,   Ident,   Ident,   Ident,   Ident,   Ident,
 /*  70+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
 /*  80+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
-/*  90+ */   Ident,  TOK_LB, _______,  TOK_RB, _______,   Ident, Templat,   Ident,   Ident,   Ident,
+/*  90+ */   Ident,  TOK_LB, _______,  TOK_RB, _______,   Ident,   String,   Ident,   Ident,   Ident,
 /* 100+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
 /* 110+ */   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,   Ident,
-/* 120+ */   Ident,   Ident,   Ident,  TOK_LC, _______,  TOK_RC,T_BITNOT, _______
+/* 120+ */   Ident,   Ident,   Ident,  TOK_LC, _______,  TOK_RC,TOK_BITNOT, _______
 };
 #undef _______
 
@@ -167,7 +173,6 @@ class Scanner {
   inline bool isASCIIDecimal(char c) { return (unsigned)c - '0' <= 9; }
 
 public:
-  Scanner(std::istream _tokStream) : tokStream(_tokStream) { }
 
   /*
     Spidermonkey's tokenize function has the following control flow structure:
@@ -188,8 +193,12 @@ public:
 	return boost::optional<Token>();
       }
       int c = tokStream.get();
+      auto initialKind = FirstCharKind(firstCharKinds[c]);
       // Cases:
       // 1. Single character token
+      if (initialKind <= OneChar_Max) {
+	return boost::optional<Token>(Token());
+      }
       // 2. Whitespace
       // 3. Identifier
       for (;;) {
@@ -210,8 +219,8 @@ public:
 	    if (c == '+' || c == '-') 
 	      c = tokStream.get();
 	    if (!isASCIIDecimal(c)) {
-	      cerr << "error: malformed decimal" << endl; 
-	      return optional<Token>();
+	      std::cerr << "error: malformed decimal" << std::endl; 
+	      return boost::optional<Token>();
 	    }
 	    do {
 	      c = tokStream.get();
@@ -225,5 +234,7 @@ public:
       // 7. Hex, octal, binary
       // 8. Operators 
     }
+  }
 };
 
+#endif /* SCANNER_H */
