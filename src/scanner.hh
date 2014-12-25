@@ -4,106 +4,99 @@
 #include <boost/optional.hpp>
 #include <string>
 
-#define FOR_EACH_TOKEN_KIND_WITH_RANGE(macro, range) \
-  macro(SEMI,  ";") \
-  macro(COMMA, ",") \
-  macro(HOOK, "?") \
-  macro(COLON, ":") \
-  macro(INC, "++") \
-  macro(DEC, "--") \
-  macro(DOT, ".") \
-macro( TRIPLEDOT , "...") \
-macro( LB , "[") \
-macro( RB , "]") \
-macro( LC , "{") \
-macro( RC , "}") \
-macro( LP , "(") \
-macro( RP , ")") \
-macro( NAME , "identifier") \
-macro( NUMBER , "numeric literal") \
-macro( STRING , "string literal") \
-macro( TEMPLATE_HEAD , "${") \
-macro( NO_SUBS_TEMPLATE , "template literal") \
-macro( REGEXP , "regular expression literal") \
-macro( TRUE , "boolean literal 'true'") \
-macro( FALSE , "boolean literal 'false'") \
-macro( NULL , "null literal") \
-macro( THIS , "keyword 'this'") \
-macro( FUNCTION , "keyword 'function'") \
-macro( IF , "keyword 'if'") \
-macro( ELSE , "keyword 'else'") \
-macro( SWITCH , "keyword 'switch'") \
-macro( CASE , "keyword 'case'") \
-macro( DEFAULT , "keyword 'default'") \
-macro( WHILE , "keyword 'while'") \
-macro( DO , "keyword 'do'") \
-macro( FOR , "keyword 'for'") \
-macro( BREAK , "keyword 'break'") \
-macro( CONTINUE , "keyword 'continue'") \
-macro( VAR , "keyword 'var'") \
-macro( CONST , "keyword 'const'") \
-macro( WITH , "keyword 'with'") \
-macro( RETURN , "keyword 'return'") \
-macro( NEW , "keyword 'new'") \
-macro( DELETE , "keyword 'delete'") \
-macro( TRY , "keyword 'try'") \
-macro( CATCH , "keyword 'catch'") \
-macro( FINALLY , "keyword 'finally'") \
-macro( THROW , "keyword 'throw'") \
-macro( DEBUGGER , "keyword 'debugger'") \
-macro( YIELD , "keyword 'yield'") \
-macro( LET , "keyword 'let'") \
-macro( EXPORT , "keyword 'export'") \
-macro( IMPORT , "keyword 'import'") \
-macro( RESERVED , "reserved keyword") \
-macro( STRICT_RESERVED , "reserved keyword") /* End Range */ \
-macro( OR , "||") \
-macro( AND , "&&") \
-macro( BITOR , "|") \
-macro( BITXOR , "^") \
-macro( BITAND , "&") \
-macro( STRICTEQ , "===") \
-macro( EQ , "==") \
-macro( STRICTNE , "!==") \
-macro( LT , "<") \
-macro( LE , "<=") \
-macro( GT , ">") \
-macro( GE , ">=") /* End range */ \
-macro( INSTANCEOF , "keyword 'instanceof'") \
-macro( IN , "keyword 'in'") /* End range */  \
-macro( LSH , "<<") \
-macro( RSH , ">>") \
-macro( URSH , ">>>") /* End range */ \
-macro( ADD, "+") \
-macro( SUB , "-") \
-macro( MUL , "*") \
-macro( DIV , "/") \
-macro( MOD , "%") /* End range */ \
-macro( TYPEOF , "keyword 'typeof'") \
-macro( VOID , "keyword 'void'") \
-macro( NOT , "!") \
-macro( BITNOT , "~") \
-macro( ARROW , "=>") /* End range */ \
-macro( ASSIGN , "=") \
-macro( ADDASSIGN , "+=") \
-macro( SUBASSIGN , "-=") \
-macro( BITORASSIGN , "|=") \
-macro( BITXORASSIGN , "^=") \
-macro( BITANDASSIGN , "&=") \
-macro( LSHASSIGN , "<<=") \
-macro( RSHASSIGN , ">>=") \
-macro( URSHASSIGN , ">>>=") \
-macro( MULASSIGN , "*=") \
-macro( DIVASSIGN , "/=") \
-macro( MODASSIGN , "%=")
-
 enum TokenKind {
-#define EMIT_ENUM(name, desc) TOK_##name,
-#define EMIT_ENUM_RANGE(name, value) TOK_##name = TOK_##value,
-    FOR_EACH_TOKEN_KIND_WITH_RANGE(EMIT_ENUM, EMIT_ENUM_RANGE)
-#undef EMIT_ENUM
-#undef EMIT_ENUM_RANGE
-    TOK_LIMIT                      // domain size
+  TOK_SEMI,
+  TOK_COMMA,
+  TOK_HOOK,
+  TOK_COLON,
+  TOK_INC,
+  TOK_DEC,
+  TOK_DOT,
+  TOK_TRIPLEDOT, 
+  TOK_LB,
+  TOK_RB,
+  TOK_LC,
+  TOK_RC,
+  TOK_LP,
+  TOK_RP,
+  TOK_NAME,
+  TOK_NUMBER,
+  TOK_STRING,
+  TOK_TEMPLATE_HEAD,
+  TOK_NO_SUBS_TEMPLATE,
+  TOK_REGEXP,
+  TOK_TRUE,
+  TOK_FALSE,
+  TOK_NULL,
+  TOK_THIS,
+  TOK_FUNCTION,
+  TOK_IF,
+  TOK_ELSE,
+  TOK_SWITCH,
+  TOK_CASE,
+  TOK_DEFAULT,
+  TOK_WHILE,
+  TOK_DO,
+  TOK_FOR,
+  TOK_BREAK,
+  TOK_CONTINUE,
+  TOK_VAR,
+  TOK_CONST,
+  TOK_WITH,
+  TOK_RETURN,
+  TOK_NEW,
+  TOK_DELETE,
+  TOK_TRY,
+  TOK_CATCH,
+  TOK_FINALLY,
+  TOK_THROW,
+  TOK_DEBUGGER,
+  TOK_YIELD,
+  TOK_LET,
+  TOK_EXPORT,
+  TOK_IMPORT,
+  TOK_RESERVED,
+  TOK_STRICT_RESERVED,
+  TOK_OR,
+  TOK_AND,
+  TOK_BITOR, 
+  TOK_BITXOR, 
+  TOK_BITAND,
+  TOK_STRICTEQ, 
+  TOK_EQ,
+  TOK_STRICTNE, 
+  TOK_LT,
+  TOK_LE, 
+  TOK_GT,
+  TOK_GE, 
+  TOK_INSTANCEOF,
+  TOK_IN, 
+  TOK_LSH,
+  TOK_RSH, 
+  TOK_URSH,
+  TOK_ADD, 
+  TOK_SUB,
+  TOK_MUL, 
+  TOK_DIV,
+  TOK_MOD, 
+  TOK_TYPEOF,
+  TOK_VOID, 
+  TOK_NOT,
+  TOK_BITNOT, 
+  TOK_ARROW,
+  TOK_ASSIGN, 
+  TOK_ADDASSIGN,
+  TOK_SUBASSIGN, 
+  TOK_BITORASSIGN,
+  TOK_BITXORASSIGN, 
+  TOK_BITANDASSIGN,
+  TOK_LSHASSIGN, 
+  TOK_RSHASSIGN,
+  TOK_URSHASSIGN, 
+  TOK_MULASSIGN,
+  TOK_DIVASSIGN,
+  TOK_MODASSIGN,
+  TOK_LIMIT                      // domain size
 };
 
 
