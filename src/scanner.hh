@@ -182,6 +182,8 @@ public:
    */
   boost::optional<Token> getToken() {
     for (;;) {
+      Token token;
+      
       if (tokStream.eof()) {
 	return boost::optional<Token>();
       }
@@ -225,7 +227,15 @@ public:
       // 5. String or Template String
       // 6. EOL
       // 7. Hex, octal, binary
-      // 8. Operators 
+      // 8. Operators
+      switch (c) {
+      case '.':
+	c = tokStream.get();
+	if (c == '.' && tokStream.get() == '.') {
+	  token.type = TOK_TRIPLEDOT;
+	  return boost::optional<Token>(token);
+	}
+      }
     }
   }
 };
