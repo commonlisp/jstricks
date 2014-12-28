@@ -2,6 +2,7 @@
 #define SCANNER_H 
 
 #include <boost/optional.hpp>
+#include <boost/variant.hpp>
 #include <string>
 
 enum TokenKind {
@@ -159,6 +160,11 @@ static const uint8_t firstCharKinds[] = {
 };
 #undef _______
 
+struct Decimal {
+  int index;
+  Decimal(int index_) : index(index_) {}
+};
+
 
 class Scanner {
   std::istream tokStream;
@@ -180,19 +186,20 @@ public:
     out:
     error:
    */
-  boost::optional<Token> getToken() {
+  boost::optional<boost::variant<Token, Decimal> >
+  getToken() {
     for (;;) {
       Token token;
       
       if (tokStream.eof()) {
-	return boost::optional<Token>();
+	return boost::optional<boost::variant<Token, Decimal> >();
       }
       int c = tokStream.get();
       auto initialKind = FirstCharKind(firstCharKinds[c]);
       // Cases:
       // 1. Single character token
       if (initialKind <= OneChar_Max) {
-	return boost::optional<Token>(Token());
+	return boost::optional<boost::variant<Token, Decimal> >(Token());
       }
       // 2. Whitespace
       // 3. Identifier
@@ -215,7 +222,7 @@ public:
 	      c = tokStream.get();
 	    if (!isASCIIDecimal(c)) {
 	      std::cerr << "error: malformed decimal" << std::endl; 
-	      return boost::optional<Token>();
+	      return boost::optional<boost::variant<Token, Decimal> >();
 	    }
 	    do {
 	      c = tokStream.get();
@@ -231,9 +238,12 @@ public:
       switch (c) {
       case '.':
 	c = tokStream.get();
+	if (isASCIIDecimal(c)) {
+	  return boost::optional<boost::variant<Token, Decimal> >(Decimal(tokStream.tellg()));
+	}
 	if (c == '.' && tokStream.get() == '.') {
 	  token.type = TOK_TRIPLEDOT;
-	  return boost::optional<Token>(token);
+	  return boost::optional<boost::variant<Token, Decimal> >(token);
 	}
       }
     }
