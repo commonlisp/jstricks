@@ -245,6 +245,17 @@ public:
 	  token.type = TOK_TRIPLEDOT;
 	  return boost::optional<boost::variant<Token, Decimal> >(token);
 	}
+      case '=':
+	c = tokStream.get();
+	if (c == '=') {
+	  if (tokStream.get() == '=') token.type = TOK_STRICTEQ;
+	  else token.type = TOK_EQ;
+	} else if (c == '>') {
+	  token.type = TOK_ARROW;
+	} else {
+	  token.type = TOK_ASSIGN;
+	}
+	return boost::optional<boost::variant<Token, Decimal> >(token);
       }
     }
   }
