@@ -64,8 +64,24 @@ Scanner::getToken() {
 	
       }
       // 5. String or Template String
+      if (initialKind == String) {
+	
+      }
       // 6. EOL
       // 7. Hex, octal, binary
+      if (initialKind == BasePrefix) {
+	c = tokStream.get();
+	if (c == 'x' || c == 'X') {
+
+	} else if (c == 'b' || c == 'B') {
+
+	} else if (c == 'o' || c == 'O') {
+
+	} else if (isASCIIDecimal(c)) {
+
+	} else {
+	}
+      }
       // 8. Operators
       switch (c) {
       case '.':
