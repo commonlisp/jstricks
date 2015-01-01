@@ -1,4 +1,5 @@
 #include "scanner.hh"
+#include <cctype>
 
 using namespace std;
 
@@ -31,6 +32,8 @@ Scanner::getToken() {
 	return boost::optional<boost::variant<Token, Decimal> >(Token());
       }
       // 2. Whitespace
+      if (isspace(tokStream.get())) continue;
+      
       // 3. Identifier
       for (;;) {
 	c = tokStream.get();
