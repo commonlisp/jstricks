@@ -33,6 +33,7 @@ Scanner::getToken() {
       }
       // 2. Whitespace
       if (isspace(tokStream.get())) continue;
+      tokStream.unget();
       
       // 3. Identifier
       for (;;) {
@@ -105,5 +106,6 @@ Scanner::getToken() {
 	}
 	return boost::optional<boost::variant<Token, Decimal> >(token);
       }
+      
     }
 }
