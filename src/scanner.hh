@@ -4,6 +4,7 @@
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <string>
+#include <streambuf>
 
 enum TokenKind {
   TOK_SEMI,
@@ -167,7 +168,7 @@ struct Decimal {
 
 
 class Scanner {
-  std::istream tokStream;
+  std::streambuf sourceStream;
 
   inline bool isASCIIDecimal(char c) { return (unsigned)c - '0' <= 9; }
 

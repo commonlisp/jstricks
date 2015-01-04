@@ -18,6 +18,7 @@ using namespace std;
 */
 boost::optional<boost::variant<Token, Decimal> >
 Scanner::getToken() {
+    istream tokStream(&sourceStream);
     for (;;) {
       Token token;
       
@@ -37,7 +38,9 @@ Scanner::getToken() {
       
       // 3. Identifier
       for (;;) {
-	c = tokStream.get();
+	istream identStream(&sourceStream);
+	identStream.seekg(tokStream.tellg());
+	c = identStream.get();
 	
       }
       // 4. Decimal 
