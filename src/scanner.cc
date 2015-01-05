@@ -46,22 +46,24 @@ Scanner::getToken() {
       // 4. Decimal 
       if (isASCIIDecimal(c)) {
 	while (isASCIIDecimal(c)) {
-	  c = tokStream.get();
+	  istream decStream(&sourceStream);
+	  decStream.seekg(tokStream.tellg());
+	  c = decStream.get();
 	  if (c == '.') {
 	    do {
-	      c = tokStream.get();
+	      c = decStream.get();
 	    } while (isASCIIDecimal(c));
 	  }
 	  if (c == 'e' || c == 'E') {
-	    c = tokStream.get();
+	    c = decStream.get();
 	    if (c == '+' || c == '-') 
-	      c = tokStream.get();
+	      c = decStream.get();
 	    if (!isASCIIDecimal(c)) {
 	      std::cerr << "error: malformed decimal" << std::endl; 
 	      return boost::optional<boost::variant<Token, Decimal> >();
 	    }
 	    do {
-	      c = tokStream.get();
+	      c = decStream.get();
 	    } while (isASCIIDecimal(c));
 	  }
 	}
@@ -74,7 +76,10 @@ Scanner::getToken() {
       // 6. EOL
       // 7. Hex, octal, binary
       if (initialKind == BasePrefix) {
-	c = tokStream.get();
+	istream baseStream(&sourceStream);
+	baseStream.seekg(tokStream.tellg());
+
+	c = baseStream.get();
 	if (c == 'x' || c == 'X') {
 
 	} else if (c == 'b' || c == 'B') {
